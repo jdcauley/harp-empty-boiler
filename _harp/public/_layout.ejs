@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= site_title %></title>
+    <link rel="stylesheet" href="<%= site_url %>/assets/css/app.css">
+
+  </head>
+  <body class="page=<%- current.path[0] %>">
+    <%- partial("partials/_header") %>
+
+    <%- yield %>
+
+    <%- partial("partials/_footer") %>
+
+    <script src="<%= site_url %>/assets/js/blocks.js"></script>
+    <!-- <script src="<%= site_url %>/assets/js/nilla.js"></script> -->
+    <script src="<%= site_url %>/assets/js/masker.js"></script>
+    <script src="<%= site_url %>/assets/js/app.js"></script>
+
+  </body>
+</html>
