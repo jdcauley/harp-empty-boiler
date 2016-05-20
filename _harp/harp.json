@@ -3,6 +3,6 @@
   "globals": {
     "site_title": "Harp Boilerplate",
     "twitter": "@HarpPlatform",
-    "site_url": "http://localhost:9000"
+    "site_url": "https://cardinal.surge.sh"
   }
 }
