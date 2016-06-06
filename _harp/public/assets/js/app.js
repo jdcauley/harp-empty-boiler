@@ -1,7 +1,7 @@
 
 (function($){
 	var cardinal = {
-		apiURL: 'http://local.wordpress.dev/wp-json',
+		apiURL: 'https://cardinal.ourstate.com/wp-json',
 		namespace: '/cardinal/v1',
 		wp: '/wp/v2',
 		data: {},
@@ -68,13 +68,14 @@
 		recordImpression: function(data){
 			var impression = $.ajax({
 		  	url: cardinal.apiURL + cardinal.namespace + '/impression',
+				cache: false,
 		  	method: "POST",
 		  	data: data,
 		  	dataType: "json"
 			});
 
 			impression.done(function(data){
-				console.log(data);
+				// console.log(data);
 			});
 		},
 		recordClick: function(data){
@@ -90,9 +91,9 @@
 			cardinal.recordClick({
 				id: this.getAttribute('data-ad'),
 				display_url: window.location.href,
-				campaign: element.getAttribute('data-campaign')
+				campaign: this.getAttribute('data-campaign')
 			});
-			window.open(this.href,'_blank');
+			window.open(this.href, '_blank');
 		},
 		unitView: function(element){
 			cardinal.recordImpression({
@@ -111,6 +112,7 @@
 
 			var req = $.ajax({
 		  	url: cardinal.apiURL + cardinal.namespace + '/track',
+				cache: false,
 		  	method: "GET",
 		  	data: {
 					slug: slugSplit + '_' + siteSplit,
@@ -134,11 +136,12 @@
 			});
 
 		},
-		populateCampaign(element, id){
+		populateCampaign: function(element, id){
 			var link = document.createElement('a'),
 					img = document.createElement('img'),
 					request = $.ajax({
 						url: cardinal.apiURL + cardinal.wp + '/campaigns/' + id,
+						cache: false,
 						method: "GET",
 						dataType: "json"
 					});
@@ -146,7 +149,7 @@
 				var unit = response.units;
 
 				link.href= unit.target_url;
-				link.className = 'cardinal-ad-unit';
+				link.className = 'cardinal-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('target', '_blank');
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -162,7 +165,7 @@
 
 			});
 		},
-		populateUnit(element, i){
+		populateUnit: function(element, i){
 
 			var num = 0,
 					unit = null;
@@ -176,7 +179,7 @@
 				unit = first;
 
 				link.href= unit.unit_data.target_url;
-				link.className = 'cardinal-ad-unit';
+				link.className = 'cardinal-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('data-campaign', unit.campaigns[0]);
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -194,12 +197,11 @@
 				return;
 			}
 
-			console.log(cardinal.apiURL + cardinal.wp + '/units/' + cardinal.data[num].ID);
-
 			var link = document.createElement('a'),
 					img = document.createElement('img'),
 					request = $.ajax({
 						url: cardinal.apiURL + cardinal.wp + '/units/' + cardinal.data[num].ID,
+						cache: false,
 						method: "GET",
 						dataType: "json"
 					});
@@ -213,7 +215,7 @@
 				}
 
 				link.href= unit.unit_data.target_url;
-				link.className = 'cardinal-ad-unit';
+				link.className = 'cardinal-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('data-campaign', unit.campaigns[0]);
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -229,6 +231,7 @@
 
 
 				var el = new cardinal.inView(link);
+
 			  el.onInView(function() {
 						cardinal.unitView(this.el);
 			  });
@@ -247,7 +250,7 @@
 			return;
 		},
 		addStyles: function(){
-			var css = '.cardinal-ad-unit{display: block;} .cardinal-ad-unit img{display: block; height: auto; max-width: 100%; margin-left: auto; margin-right: auto;}',
+			var css = '.cardinal-unit{display: block;} .cardinal-unit img{display: block; height: auto; max-width: 100%; margin-left: auto; margin-right: auto;}',
 				head = document.head || document.getElementsByTagName('head')[0],
       	style = document.createElement('style');
 
@@ -261,10 +264,11 @@
 		},
 		getUnits: function(){
 			cardinal.addStyles();
-			var units = document.getElementsByClassName('ad-unit');
+			var units = document.getElementsByClassName('cardinal');
 
 			var request = $.ajax({
 				url: cardinal.apiURL + cardinal.namespace + '/campaign/',
+				cache: false,
 				method: "GET",
 				dataType: "json"
 			});
