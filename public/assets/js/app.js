@@ -1,7 +1,7 @@
 
 (function($){
 	var cardinal = {
-		apiURL: 'https://cardinal.ourstate.com/wp-json',
+		apiURL: 'https://www.ourstate.com/cardinal/wp-json',
 		namespace: '/cardinal/v1',
 		wp: '/wp/v2',
 		data: {},
@@ -68,14 +68,12 @@
 		recordImpression: function(data){
 			var impression = $.ajax({
 		  	url: cardinal.apiURL + cardinal.namespace + '/impression',
-				cache: false,
 		  	method: "POST",
-		  	data: data,
-		  	dataType: "json"
+		  	data: data
 			});
 
 			impression.done(function(data){
-				// console.log(data);
+
 			});
 		},
 		recordClick: function(data){
@@ -83,7 +81,6 @@
 		  	url: cardinal.apiURL + cardinal.namespace + '/click',
 		  	method: "POST",
 		  	data: data,
-		  	dataType: "json"
 			});
 		},
 		unitClick: function(event){
@@ -93,7 +90,9 @@
 				display_url: window.location.href,
 				campaign: this.getAttribute('data-campaign')
 			});
-			window.open(this.href, '_blank');
+
+			var url = this.href;
+			window.open(url,'_blank');
 		},
 		unitView: function(element){
 			cardinal.recordImpression({
@@ -113,14 +112,14 @@
 			var req = $.ajax({
 		  	url: cardinal.apiURL + cardinal.namespace + '/track',
 				cache: false,
-		  	method: "GET",
 		  	data: {
 					slug: slugSplit + '_' + siteSplit,
 					title: title,
 					site: site,
 					target_url: slug,
 				},
-		  	dataType: "json"
+				method: 'GET',
+				dataType: 'json',
 			});
 
 			req.done(function(data){
@@ -142,14 +141,14 @@
 					request = $.ajax({
 						url: cardinal.apiURL + cardinal.wp + '/campaigns/' + id,
 						cache: false,
-						method: "GET",
-						dataType: "json"
+						method: 'GET',
+						dataType: 'json'
 					});
 			request.done(function( response ) {
 				var unit = response.units;
 
 				link.href= unit.target_url;
-				link.className = 'cardinal-unit';
+				link.className = 'cardinal-ad-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('target', '_blank');
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -179,7 +178,7 @@
 				unit = first;
 
 				link.href= unit.unit_data.target_url;
-				link.className = 'cardinal-unit';
+				link.className = 'cardinal-ad-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('data-campaign', unit.campaigns[0]);
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -202,8 +201,8 @@
 					request = $.ajax({
 						url: cardinal.apiURL + cardinal.wp + '/units/' + cardinal.data[num].ID,
 						cache: false,
-						method: "GET",
-						dataType: "json"
+						method: 'GET',
+						dataType: 'json'
 					});
 
 
@@ -215,7 +214,7 @@
 				}
 
 				link.href= unit.unit_data.target_url;
-				link.className = 'cardinal-unit';
+				link.className = 'cardinal-ad-unit';
 				link.setAttribute('data-ad', unit.id);
 				link.setAttribute('data-campaign', unit.campaigns[0]);
 				link.addEventListener('click', cardinal.unitClick, false);
@@ -231,7 +230,6 @@
 
 
 				var el = new cardinal.inView(link);
-
 			  el.onInView(function() {
 						cardinal.unitView(this.el);
 			  });
@@ -250,7 +248,7 @@
 			return;
 		},
 		addStyles: function(){
-			var css = '.cardinal-unit{display: block;} .cardinal-unit img{display: block; height: auto; max-width: 100%; margin-left: auto; margin-right: auto;}',
+			var css = '.cardinal-ad-unit{display: block;} .cardinal-ad-unit img{display: block; height: auto; max-width: 100%; margin-left: auto; margin-right: auto;}',
 				head = document.head || document.getElementsByTagName('head')[0],
       	style = document.createElement('style');
 
@@ -269,11 +267,12 @@
 			var request = $.ajax({
 				url: cardinal.apiURL + cardinal.namespace + '/campaign/',
 				cache: false,
-				method: "GET",
-				dataType: "json"
+				method: 'GET',
+				dataType: 'json'
 			});
 
 			request.done(function( response ) {
+
 				cardinal.data = response;
 
 				for(var i = 0, x = units.length; i < x; i++){

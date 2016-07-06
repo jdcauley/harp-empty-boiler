@@ -1,2 +1,5 @@
-_harp/public/assets/dependencies
-
+public/assets/dependencies
+node_modules
+*.zip
+www
+.node-version
